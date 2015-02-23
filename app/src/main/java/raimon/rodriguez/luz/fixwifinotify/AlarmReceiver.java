@@ -85,88 +85,74 @@ public class AlarmReceiver extends BroadcastReceiver {
                             wifiManager.setWifiEnabled(true);
                             MainActivity.Log_meu(context, "REACTIVANT Wifi...");
 
+                            // Aixo s'executa si wifi esta activiat i tens conexió online i sa pantalla esta apagada (es a dir s'usuari NO empra es movil)
+                            //TODO fes prova per saber si això té algun efecte. SINO elimineu.
+                            //per sa saber si sa pantalla està encesa
+                            boolean pantalla_on;
+                            int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                            MainActivity.Log_meu(context, "SDK_INT ="+currentapiVersion);
+                            if (currentapiVersion > Build.VERSION_CODES.KITKAT){
+                                pantalla_on =  powerManager.isInteractive();
+                            } else{
+                                pantalla_on = powerManager. isScreenOn();
+                            }
 
-                            // Obrir Whatsapp --- de moment NO, a veure que
-                            final Intent sendIntent = new Intent();
-                            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            //sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);// has afegit això
-                            sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, ""); // aqui hi havia text
-                            sendIntent.setPackage("com.whatsapp");
-                            sendIntent.setType("text/plain");
-                            context.startActivity(sendIntent);
-                            MainActivity.Log_meu(context, "Intent a Whatsapp...");
+
+                            // ! vol dir negació, així que només farà el seguent si pantalla està apagada.
+                            if(!pantalla_on) {
+
+                                MainActivity.Log_meu(context, "Sa pantalla esta apagada així que farem intent a whatsapp");
+
+/*   FICAR AIXO???? ==>         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                                activityManager.killBackgroundProcesses("com.whatsapp");
+                                clearMemory(context);*/
+
+                                // Obrir Whatsapp --- de moment NO, a veure que
+                                final Intent sendIntent = new Intent();
+                                sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                //sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);// has afegit això
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, ""); // aqui hi havia text
+                                sendIntent.setPackage("com.whatsapp");
+                                sendIntent.setType("text/plain");
+                                context.startActivity(sendIntent);
+                                MainActivity.Log_meu(context, "Intent a Whatsapp...");
+
+
+
+                                // programa reinici wifi per al cap de pocs segons
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+
+
+                                        // reactivant wifi
+                                        // això ho has mogut...
+
+                                        MainActivity.Log_meu(context, "Va a pantalla principal");
+                                        //va a pantalla inicial android
+                                        Intent startMain = new Intent(Intent.ACTION_MAIN);
+                                        startMain.addCategory(Intent.CATEGORY_HOME);
+                                        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        context.startActivity(startMain);
+
+                                    }
+                                }, 3000);
+
+                            }
+
+
 
                             //TODO cancela intent whatsapp o reiniciar servei whatsapp...
 /*                            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
                             activityManager.killBackgroundProcesses("com.whatsapp");
                             clearMemory(context);*/
 
-                            //va a pantalla inicial android
-                            Intent startMain = new Intent(Intent.ACTION_MAIN);
-                            startMain.addCategory(Intent.CATEGORY_HOME);
-                            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(startMain);
+
 
                             //
-                            /*
-                            // programa reinici wifi per al cap de pocs segons
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                public void run() {
 
 
-                                    // reactivant wifi
-                                    // això ho has mogut...
-
-
-
-                                    // Aixo s'executa si wifi esta activiat i tens conexió online i sa pantalla esta apagada (es a dir s'usuari NO empra es movil)
-                                    //TODO fes prova per saber si això té algun efecte. SINO elimineu.
-                                    //per sa saber si sa pantalla està encesa
-                                    boolean pantalla_on;
-                                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-                                    MainActivity.Log_meu(context, "SDK_INT ="+currentapiVersion);
-                                    if (currentapiVersion > Build.VERSION_CODES.KITKAT){
-                                        pantalla_on =  powerManager.isInteractive();
-                                    } else{
-                                        pantalla_on = powerManager. isScreenOn();
-                                    }
-
-
-                                    // ! vol dir negació, així que només farà el seguent si pantalla està apagada.
-                                    if(!pantalla_on) {
-
-                                        MainActivity.Log_meu(context, "Sa pantalla esta apagada així que farem intent a whatsapp");
-
-                                        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                                        activityManager.killBackgroundProcesses("com.whatsapp");
-                                        clearMemory(context);
-
-                                        // Obrir Whatsapp --- de moment NO, a veure que
-                                        final Intent sendIntent = new Intent();
-
-                                        sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        //sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);// has afegit això
-                                        sendIntent.setAction(Intent.ACTION_SEND);
-                                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Hola"); // aqui hi havia text
-                                        sendIntent.setPackage("com.whatsapp");
-                                        sendIntent.setType("text/plain");
-                                        context.startActivity(sendIntent);
-
-
-                                        //va a menu principal movil
-                                       Intent startMain = new Intent(Intent.ACTION_MAIN);
-                                        startMain.addCategory(Intent.CATEGORY_HOME);
-                                        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        context.startActivity(startMain);
-
-                                    }
-
-
-
-                                }
-                            }, 3000);*/
                         }
                         else
                         {
