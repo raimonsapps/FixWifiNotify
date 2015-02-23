@@ -86,7 +86,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             MainActivity.Log_meu(context, "REACTIVANT Wifi...");
 
                             // Aixo s'executa si wifi esta activiat i tens conexió online i sa pantalla esta apagada (es a dir s'usuari NO empra es movil)
-                            //TODO fes prova per saber si això té algun efecte. SINO elimineu.
+                            //TODO fes prova per saber si això té algun efecte. SINO elimineu....
                             //per sa saber si sa pantalla està encesa
                             boolean pantalla_on;
                             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
